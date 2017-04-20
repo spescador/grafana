@@ -43,6 +43,8 @@ class TablePanelCtrl extends MetricsPanelCtrl {
     fontSize: '100%',
     sort: {col: 0, desc: true},
     filterNull: false,
+    metricLinks: [],
+    headingDateFormat: 'YYYY-MM-DD HH:mm:ss',
   };
 
   /** @ngInject */
@@ -55,14 +57,6 @@ class TablePanelCtrl extends MetricsPanelCtrl {
       this.panel.columns = this.panel.fields;
       delete this.panel.columns;
       delete this.panel.fields;
-    }
-
-    if (this.panel.metricLinks === void 0) {
-      this.panel.metricLinks = [];
-    }
-
-    if (this.panel.headingDateFormat === void 0) {
-      this.panel.headingDateFormat = 'YYYY-MM-DD HH:mm:ss';
     }
 
     _.defaults(this.panel, this.panelDefaults);
