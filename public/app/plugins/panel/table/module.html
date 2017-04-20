@@ -1,30 +1,30 @@
+<div ng-class="ctrl.panel.transform == 'timeseries_as_columns'  ? 'table-panel-container-not-fixed' : 'table-panel-container'">
+  <div class="table-panel-header-bg" ng-show="ctrl.table.rows.length && ctrl.panel.transform != 'timeseries_as_columns'"></div>
+  <div class="table-panel-scroll" ng-show="ctrl.table.rows.length">
 
-<div class="table-panel-container">
-        <div class="table-panel-header-bg" ng-show="ctrl.dataRaw.length>0"></div>
-	<div class="table-panel-scroll" ng-show="ctrl.dataRaw.length>0">
-		<table class="table-panel-table">
-			<thead>
-				<tr>
-					<th ng-repeat="col in ctrl.table.columns" ng-hide="col.hidden">
-						<div class="table-panel-table-header-inner pointer" ng-click="ctrl.toggleColumnSort(col, $index)">
-							{{col.text}}
-							<span class="table-panel-table-header-controls" ng-if="col.sort">
+    <table class="table-panel-table" ng-class="{'not-fixed': ctrl.panel.transform == 'timeseries_as_columns'}">
+      <thead>
+      <tr>
+        <th ng-repeat="col in ctrl.table.columns" ng-hide="col.hidden">
+          <div class="table-panel-table-header-inner pointer" ng-class="{'not-fixed': ctrl.panel.transform == 'timeseries_as_columns'}" ng-click="ctrl.toggleColumnSort(col, $index)">
+            {{col.text}}
+            <span class="table-panel-table-header-controls" ng-if="col.sort">
 								<i class="fa fa-caret-down" ng-show="col.desc"></i>
 								<i class="fa fa-caret-up" ng-hide="col.desc"></i>
 							</span>
-						</div>
-					</th>
-				</tr>
-			</thead>
-			<tbody>
-			</tbody>
-		</table>
-	</div>
+          </div>
+        </th>
+      </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+  </div>
 </div>
-<div class="datapoints-warning" ng-show="ctrl.dataRaw.length===0">
-          <span class="small" >
-              No datapoints <tip>No datapoints returned from metric query</tip>
-          </span>
+<div class="datapoints-warning" ng-show="ctrl.table.rows.length===0">
+	<span class="small" >
+		No data to show <tip>Nothing returned by data query</tip>
+	</span>
 </div>
 <div class="table-panel-footer">
 </div>

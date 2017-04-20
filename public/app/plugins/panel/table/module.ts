@@ -57,6 +57,10 @@ class TablePanelCtrl extends MetricsPanelCtrl {
       delete this.panel.fields;
     }
 
+    if (this.panel.metricLinks === void 0) {
+      this.panel.metricLinks = [];
+    }
+
     _.defaults(this.panel, this.panelDefaults);
 
     this.events.on('data-received', this.onDataReceived.bind(this));
@@ -95,6 +99,7 @@ class TablePanelCtrl extends MetricsPanelCtrl {
 
   onDataReceived(dataList) {
     this.dataRaw = dataList;
+
     this.pageIndex = 0;
 
     // automatically correct transform mode based on data
@@ -141,7 +146,9 @@ class TablePanelCtrl extends MetricsPanelCtrl {
   }
 
   exportCsv() {
-    var renderer = new TableRenderer(this.panel, this.table, this.dashboard.isTimezoneUtc(), this.$sanitize);
+    var renderer = new TableRenderer(this.$injector, this.panel, this.table, this.dashboard.isTimezoneUtc
+    (), this
+    .$sanitize);
     FileExport.exportTableDataToCsv(renderer.render_values());
   }
 
@@ -162,7 +169,8 @@ class TablePanelCtrl extends MetricsPanelCtrl {
     }
 
     function appendTableRows(tbodyElem) {
-      var renderer = new TableRenderer(panel, data, ctrl.dashboard.isTimezoneUtc(), ctrl.$sanitize);
+      var renderer = new TableRenderer(ctrl.$injector, panel, data, ctrl.dashboard.isTimezoneUtc(), ctrl
+      .$sanitize);
       tbodyElem.empty();
       tbodyElem.html(renderer.render(ctrl.pageIndex));
     }

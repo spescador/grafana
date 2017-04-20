@@ -23,7 +23,7 @@ export class TablePanelEditorCtrl {
   getColumnNames: any;
 
   /** @ngInject */
-  constructor($scope, private $q, private uiSegmentSrv) {
+  constructor($scope, private $q, private uiSegmentSrv, private backendSrv) {
     $scope.editor = this;
     this.panelCtrl = $scope.ctrl;
     this.panel = this.panelCtrl.panel;
@@ -57,6 +57,15 @@ export class TablePanelEditorCtrl {
       }
       return _.map(this.panelCtrl.table.columns, function(col: any) {
         return col.text;
+      });
+    };
+
+    $scope.searchDashboards = function(queryStr, callback) {
+      backendSrv.search({query: queryStr}).then(function(hits) {
+          var dashboards = _.map(hits, function(dash) {
+          return dash.title;
+        });
+        callback(dashboards);
       });
     };
   }
@@ -129,6 +138,39 @@ export class TablePanelEditorCtrl {
     ref[2] = copy;
     this.panelCtrl.render();
   }
+
+  addMetricLink() {
+    var metricLinkDefaults = {
+      metricName: '',
+      link: {
+          type: 'dashboard',
+        },
+    };
+
+    this.panel.metricLinks.push(angular.copy(metricLinkDefaults));
+  }
+
+  deleteMetricLink(metricLink) {
+    this.panel.metricLinks = _.without(this.panel.metricLinks, metricLink);
+  }
+
+  getUnlinkedMetricsNames = () => {
+    if (!this.panelCtrl.table) {
+      return [];
+    }
+
+    var names = _.map(this.panelCtrl.table.rows, function(row: any) {
+      return row[0];
+    });
+
+    for (let i = 0; i < this.panel.metricLinks.length; i++) {
+      let metricLink = this.panel.metricLinks[i];
+      names = _.without(names, metricLink.metricName);
+    }
+
+    return names;
+  }
+
 }
 
 /** @ngInject */

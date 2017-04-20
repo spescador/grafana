@@ -1,4 +1,5 @@
 import {describe, beforeEach, it, sinon, expect} from 'test/lib/common';
+import moment from 'moment';
 
 import {transformers, transformDataToTable} from '../transformers';
 
@@ -179,6 +180,36 @@ describe('when transforming time series table', () => {
       it ('should return 1 rows', () => {
         expect(table.rows.length).to.be(1);
         expect(table.rows[0][0]).to.be(1000);
+      });
+    });
+
+    describe('timeseries_as_columns', () => {
+      var panel = {
+        transform: 'timeseries_as_columns',
+        sort: {col: 0, desc: true},
+      };
+
+      beforeEach(() => {
+        table = transformDataToTable(timeSeries, panel);
+      });
+
+      it('should return 2 rows', () => {
+        expect(table.rows.length).to.be(2);
+        expect(table.rows[0][0]).to.be('series1');
+        expect(table.rows[1][0]).to.be('series2');
+      });
+
+      it('should return 3 columns', () => {
+        var dateTime = this.isUtc ? moment(time).utc() : moment(time);
+        var dateTimePlus1 = this.isUtc ? moment(time+1).utc() : moment(time+1);
+
+        var formattedTime = dateTime.format('YYYY-MM-DD HH:mm:ss');
+        var formattedTimePlus1 = dateTimePlus1.format('YYYY-MM-DD HH:mm:ss');
+
+        expect(table.columns.length).to.be(3);
+        expect(table.columns[0].text).to.be('Metrics');
+        expect(table.columns[1].text).to.be(formattedTime);
+        expect(table.columns[2].text).to.be(formattedTimePlus1);
       });
     });
 

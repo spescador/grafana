@@ -16,6 +16,10 @@
   position: relative;
 }
 
+.table-panel-container-not-fixed {
+  position: relative;
+}
+
 .table-panel-footer {
   text-align: center;
   font-size: 90%;
@@ -75,6 +79,24 @@
   }
 }
 
+.table-panel-table.not-fixed {
+  th {
+    position: -webkit-sticky;
+    position: -moz-sticky;
+    position: -ms-sticky;
+    position: -o-sticky;
+    position: sticky;
+    top: 0;
+    background: $grafanaListAccent;
+    height: 2.0em;
+    &:first-child {
+      .table-panel-table-header-inner {
+        padding-left: 15px;
+      }
+    }
+  }
+}
+
 .table-panel-header-bg {
   background: $grafanaListAccent;
   border-top: 2px solid $body-bg;
@@ -92,6 +114,10 @@
   color: $blue;
   position: absolute;
   top: 0;
+}
+
+.table-panel-table-header-inner.not-fixed {
+  position:relative;
 }
 
 .table-panel-width-hack {

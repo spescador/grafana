@@ -1,4 +1,4 @@
-import {describe, beforeEach, it, sinon, expect} from 'test/lib/common';
+import {describe, beforeEach, it, sinon, expect, angularMocks} from 'test/lib/common';
 
 import TableModel from 'app/core/table_model';
 import {TableRenderer} from '../renderer';
@@ -54,14 +54,15 @@ describe('when rendering table', () => {
           type: 'string',
           sanitize: true,
         }
-      ]
+      ],
+      metricLinks: [],
     };
 
     var sanitize = function(value) {
       return 'sanitized';
     };
 
-    var renderer = new TableRenderer(panel, table, 'utc', sanitize);
+    var renderer = new TableRenderer(this.$injector, panel, table, 'utc', sanitize);
 
     it('time column should be formated', () => {
       var html = renderer.renderCell(0, 1388556366666);
@@ -134,5 +135,54 @@ describe('when rendering table', () => {
     });
   });
 });
+
+describe('when rendering table with timeseries as columns', () => {
+  beforeEach(angularMocks.module('grafana.core'));
+  beforeEach(angularMocks.module('grafana.services'));
+
+  var panel = {
+    pageSize: 10,
+    styles: [],
+    metricLinks: [
+      {metricName: 'Some column',
+      link:
+        {type: 'absolute',
+          url: 'https://google.com'
+        }
+      },
+    ],
+  };
+
+  var table = new TableModel();
+  table.columns = [
+    {text: 'Metrics'},
+    {text: '2016-01-01'},
+    {text: '2016-01-02'}
+  ];
+
+  var sanitize = function(value) {
+    return 'sanitized';
+  };
+
+  it('metricLink in linked column should be added', angularMocks.inject(function(_$injector_){
+    var renderer = new TableRenderer(_$injector_, panel, table, 'utc', sanitize);
+    var html = renderer.renderCell(0, 'Some column');
+
+    var resultHtml = '<td><div class="markdown-html">';
+    resultHtml += '<a class="panel-menu-link" href="https://google.com" target="_self">Some column</a></div></td>';
+
+    expect(html).to.be(resultHtml);
+  }));
+
+  it('metricLink in UNlinked column should NOT be added', angularMocks.inject(function(_$injector_){
+    var renderer = new TableRenderer(_$injector_, panel, table, 'utc', sanitize);
+    var html = renderer.renderCell(0, 'Some other column');
+
+    expect(html).to.be('<td>Some other column</td>');
+  }));
+
+});
+
+
 
 

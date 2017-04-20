@@ -73,6 +73,69 @@ transformers['timeseries_to_columns'] = {
   }
 };
 
+transformers['timeseries_as_columns'] = {
+  description: 'Time series as columns',
+  getColumns: function() {
+    return [];
+  },
+  transform: function(data, panel, model) {
+    model.columns.push({text: 'Metrics', type: 'string'});
+
+    // group by metrics
+    var points = {};
+    var columns = {};
+
+    for (var i = 0; i < data.length; i++) {
+      var series = data[i];
+      var metric = series.target;
+
+      for (var y = 0; y < series.datapoints.length; y++) {
+        var dp = series.datapoints[y];
+        var timeKey = dp[1].toString();
+
+        if (!columns[timeKey]) {
+          columns[timeKey] = {time: dp[1]};
+        }
+
+        if (!points[metric]) {
+          points[metric] = {metric: metric};
+        }
+        points[metric][timeKey] = dp[0];
+      }
+    }
+
+    let dateFormat = 'YYYY-MM-DD HH:mm:ss';
+    for (var s in panel.styles) {
+      var style = panel.styles[s];
+      if (style.type === 'date') {
+        dateFormat = style.dateFormat;
+        break;
+      }
+    }
+
+    for (var c in columns) {
+      var date = moment(columns[c].time);
+      if (this.isUtc) {
+        date = date.utc();
+      }
+      model.columns.push({text: date.format(dateFormat)});
+    }
+
+    for (var m in points) {
+      var point = points[m];
+      var values = [point.metric];
+
+      for (var c in columns) {
+        var value = point[c];
+        values.push(value);
+      }
+
+      model.rows.push(values);
+    }
+  }
+};
+
+
 transformers['timeseries_aggregations'] = {
   description: 'Time series aggregations',
   getColumns: function() {
