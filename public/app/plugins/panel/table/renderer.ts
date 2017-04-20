@@ -138,8 +138,15 @@ export class TableRenderer {
       this.table.columns[columnIndex].hidden = false;
     }
 
-    value = columnIndex === 0 ? this.getMetricLinkContent(value) : value;
+    if (this.hasLinkableContent(columnIndex)) {
+      value = this.getMetricLinkContent(value);
+    }
+
     return '<td' + style + '>' + value + widthHack + '</td>';
+  }
+
+  hasLinkableContent(columnIndex) {
+    return this.panel.transform === 'timeseries_as_columns' && columnIndex === 0;
   }
 
   getMetricLinkContent(value) {
