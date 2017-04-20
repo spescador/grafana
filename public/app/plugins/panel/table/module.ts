@@ -61,6 +61,10 @@ class TablePanelCtrl extends MetricsPanelCtrl {
       this.panel.metricLinks = [];
     }
 
+    if (this.panel.headingDateFormat === void 0) {
+      this.panel.headingDateFormat = 'YYYY-MM-DD HH:mm:ss';
+    }
+
     _.defaults(this.panel, this.panelDefaults);
 
     this.events.on('data-received', this.onDataReceived.bind(this));

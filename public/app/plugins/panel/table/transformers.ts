@@ -104,21 +104,12 @@ transformers['timeseries_as_columns'] = {
       }
     }
 
-    let dateFormat = 'YYYY-MM-DD HH:mm:ss';
-    for (var s in panel.styles) {
-      var style = panel.styles[s];
-      if (style.type === 'date') {
-        dateFormat = style.dateFormat;
-        break;
-      }
-    }
-
     for (var c in columns) {
       var date = moment(columns[c].time);
       if (this.isUtc) {
         date = date.utc();
       }
-      model.columns.push({text: date.format(dateFormat)});
+      model.columns.push({text: date.format(panel.headingDateFormat)});
     }
 
     for (var m in points) {

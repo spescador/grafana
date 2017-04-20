@@ -141,6 +141,13 @@
 
 <div class="editor-row" ng-show="editor.panel.transform === 'timeseries_as_columns'" style="margin-top: 40px;">
   <div class="section gf-form-group">
+    <h5 class="section-heading">Time series column style</h5>
+    <div class="gf-form" style="margin-bottom: 20px;">
+      <label class="gf-form-label">Date format</label>
+      <metric-segment-model property="editor.panel.headingDateFormat" options="editor.dateFormats"
+                            on-change="editor.render()"
+                            custom="true"></metric-segment-model>
+    </div>
     <h5 class="section-heading">Drill down</h5>
     <div ng-repeat="metricLink in editor.panel.metricLinks">
       <div class="section">

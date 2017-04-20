@@ -143,6 +143,7 @@ describe('when rendering table with timeseries as columns', () => {
   var panel = {
     pageSize: 10,
     styles: [],
+    transform: 'timeseries_as_columns',
     metricLinks: [
       {metricName: 'Some column',
       link:

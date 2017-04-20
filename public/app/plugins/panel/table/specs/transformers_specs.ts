@@ -186,6 +186,7 @@ describe('when transforming time series table', () => {
     describe('timeseries_as_columns', () => {
       var panel = {
         transform: 'timeseries_as_columns',
+        headingDateFormat: 'YYYY-MM-DD HH:mm:ss',
         sort: {col: 0, desc: true},
       };
 
@@ -203,8 +204,8 @@ describe('when transforming time series table', () => {
         var dateTime = this.isUtc ? moment(time).utc() : moment(time);
         var dateTimePlus1 = this.isUtc ? moment(time+1).utc() : moment(time+1);
 
-        var formattedTime = dateTime.format('YYYY-MM-DD HH:mm:ss');
-        var formattedTimePlus1 = dateTimePlus1.format('YYYY-MM-DD HH:mm:ss');
+        var formattedTime = dateTime.format(panel.headingDateFormat);
+        var formattedTimePlus1 = dateTimePlus1.format(panel.headingDateFormat);
 
         expect(table.columns.length).to.be(3);
         expect(table.columns[0].text).to.be('Metric');
