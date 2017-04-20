@@ -79,7 +79,7 @@ transformers['timeseries_as_columns'] = {
     return [];
   },
   transform: function(data, panel, model) {
-    model.columns.push({text: 'Metrics', type: 'string'});
+    model.columns.push({text: 'Metric', type: 'string'});
 
     // group by metrics
     var points = {};

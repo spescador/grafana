@@ -155,7 +155,7 @@ describe('when rendering table with timeseries as columns', () => {
 
   var table = new TableModel();
   table.columns = [
-    {text: 'Metrics'},
+    {text: 'Metric'},
     {text: '2016-01-01'},
     {text: '2016-01-02'}
   ];

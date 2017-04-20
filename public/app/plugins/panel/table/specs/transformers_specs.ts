@@ -207,7 +207,7 @@ describe('when transforming time series table', () => {
         var formattedTimePlus1 = dateTimePlus1.format('YYYY-MM-DD HH:mm:ss');
 
         expect(table.columns.length).to.be(3);
-        expect(table.columns[0].text).to.be('Metrics');
+        expect(table.columns[0].text).to.be('Metric');
         expect(table.columns[1].text).to.be(formattedTime);
         expect(table.columns[2].text).to.be(formattedTimePlus1);
       });
