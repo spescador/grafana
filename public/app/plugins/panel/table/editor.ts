@@ -23,7 +23,7 @@ export class TablePanelEditorCtrl {
   getColumnNames: any;
 
   /** @ngInject */
-  constructor($scope, private $q, private uiSegmentSrv, private backendSrv) {
+  constructor($scope, private $q, private uiSegmentSrv, private dashboardSrv) {
     $scope.editor = this;
     this.panelCtrl = $scope.ctrl;
     this.panel = this.panelCtrl.panel;
@@ -61,12 +61,7 @@ export class TablePanelEditorCtrl {
     };
 
     $scope.searchDashboards = function(queryStr, callback) {
-      backendSrv.search({query: queryStr}).then(function(hits) {
-          var dashboards = _.map(hits, function(dash) {
-          return dash.title;
-        });
-        callback(dashboards);
-      });
+      dashboardSrv.searchDashboards(queryStr, callback);
     };
   }
 

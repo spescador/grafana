@@ -10,7 +10,7 @@ function (angular, _, $) {
 
   var module = angular.module('grafana.directives');
 
-  module.directive('graphLegend', function(popoverSrv, $timeout) {
+  module.directive('graphLegend', function(popoverSrv, $injector, $timeout) {
 
     return {
       link: function(scope, elem) {
@@ -101,6 +101,27 @@ function (angular, _, $) {
           return html + '</th>';
         }
 
+        function getMetricLinkContent(value) {
+          var link = null;
+          for (var _i = 0, _a = panel.metricLinks; _i < _a.length; _i++) {
+            var metricLink = _a[_i];
+            if (metricLink.metricName === value) {
+              link = metricLink.link;
+            }
+          }
+
+          var html = '';
+          if (link !== null) {
+            var linkSrv = $injector.get('linkSrv');
+            var info = linkSrv.getPanelLinkAnchorInfo(link, panel.scopedVars);
+            html += '<div class="markdown-html">';
+            html += '<a class="panel-menu-link" href="' + info.href;
+            html += '" target="' + info.target + '">' + link.title + '</a>';
+            html += '</div>';
+          }
+          return html;
+        }
+
         function render() {
           if (!ctrl.panel.legend.show) {
             elem.empty();
@@ -184,7 +205,7 @@ function (angular, _, $) {
               if (panel.legend.current) { html += '<div class="graph-legend-value current">' + current + '</div>'; }
               if (panel.legend.total) { html += '<div class="graph-legend-value total">' + total + '</div>'; }
             }
-
+            html += getMetricLinkContent(series.label);
             html += '</div>';
             seriesElements.push($(html));
 

@@ -10,6 +10,7 @@ import helpers from '../../../../../test/specs/helpers';
 describe('GraphCtrl', function() {
   var ctx = new helpers.ControllerTestContext();
 
+  beforeEach(angularMocks.module('grafana.core'));
   beforeEach(angularMocks.module('grafana.services'));
   beforeEach(angularMocks.module('grafana.controllers'));
   beforeEach(angularMocks.module(function($compileProvider) {
