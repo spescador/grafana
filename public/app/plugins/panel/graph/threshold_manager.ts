@@ -134,6 +134,38 @@ export class ThresholdManager {
   draw(plot) {
     this.thresholds = this.panelCtrl.panel.thresholds;
     this.plot = plot;
+    var canvas = plot.getCanvas();
+    var ctx = canvas.getContext("2d");
+    var data = this.panelCtrl.seriesList;
+
+    // Iterate over each threshold.
+    for (var t = 0; t < this.thresholds.length; t++) {
+      // Check if thresholding points is enabled
+      if (this.thresholds[t].points) {
+        var offset = plot.getPlotOffset();
+        var axes = plot.getAxes();
+        for (var i = 0; i < data.length; i++) {
+          var series = data[i];
+          // iterate through the data contained in the series
+          for (var j = 0; j < series.data.length; j++) {
+            // extract the data point
+            var d = series.data[j];
+            if (!this.panelCtrl.panel.bars) {
+              // ignore timestamp, compare value against threshold
+              var value = d[1];
+              var x = offset.left + axes.xaxis.p2c(d[0]);
+              var y = offset.top + axes.yaxis.p2c(d[1]);
+              // determine if threshold is gt or lt and if point need to be marked on canvas
+              if (this.thresholds[t].op === 'gt' && value > this.thresholds[t].value) {
+                this.drawThresholdDataPoint(x, y, this.thresholds[t], this.panelCtrl.panel.pointradius, ctx);
+              } else if (this.thresholds[t].op === 'lt' && value < this.thresholds[t].value) {
+                 this.drawThresholdDataPoint(x, y, this.thresholds[t], this.panelCtrl.panel.pointradius, ctx);
+              }
+            }
+          }
+        }
+      }
+    }
     this.placeholder = plot.getPlaceholder();
 
     if (this.needsCleanup) {
@@ -235,5 +267,35 @@ export class ThresholdManager {
     }
   }
 
+  drawThresholdDataPoint(x,y, threshold, pointradius, ctx) {
+    ctx.beginPath();
+    ctx.arc(x,y,pointradius,0,Math.PI*2,true);
+    ctx.closePath();
+    ctx.fillStyle = this.getThresholdColourMode(threshold);
+    ctx.fill();
+  }
+
+  getThresholdColourMode(threshold){
+    var pointColor;
+    switch (threshold.colorMode) {
+      case 'critical': {
+        pointColor = 'rgba(237, 46, 24, 0.60)';
+        break;
+      }
+      case 'warning': {
+        pointColor = 'rgba(247, 149, 32, 0.60)';
+        break;
+      }
+      case 'ok': {
+        pointColor = 'rgba(6,163,69, 0.60)';
+        break;
+      }
+      case 'custom': {
+        pointColor = threshold.pointColor;
+        break;
+      }
+    }
+    return pointColor;
+  }
 }
 
