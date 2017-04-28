@@ -26,8 +26,8 @@ export class AxesEditorCtrl {
     };
 
     this.dataFormats = {
-      'Timeseries': 'timeseries',
-      'ES histogram': 'es_histogram'
+      'Time series': 'timeseries',
+      'Time series Pre-bucketed': 'tsbuckets'
     };
   }
 
