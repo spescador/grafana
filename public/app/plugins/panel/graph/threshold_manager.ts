@@ -155,11 +155,8 @@ export class ThresholdManager {
               var value = d[1];
               var x = offset.left + axes.xaxis.p2c(d[0]);
               var y = offset.top + axes.yaxis.p2c(d[1]);
-              // determine if threshold is gt or lt and if point need to be marked on canvas
-              if (this.thresholds[t].op === 'gt' && value > this.thresholds[t].value) {
+              if (this.compareValueToThresholds(this.thresholds[t], value)) {
                 this.drawThresholdDataPoint(x, y, this.thresholds[t], this.panelCtrl.panel.pointradius, ctx);
-              } else if (this.thresholds[t].op === 'lt' && value < this.thresholds[t].value) {
-                 this.drawThresholdDataPoint(x, y, this.thresholds[t], this.panelCtrl.panel.pointradius, ctx);
               }
             }
           }
@@ -264,6 +261,17 @@ export class ThresholdManager {
       if (threshold.line) {
         options.grid.markings.push({yaxis: {from: threshold.value, to: threshold.value}, color: lineColor});
       }
+    }
+  }
+
+  compareValueToThresholds(threshold, value){
+    // determine if threshold is gt or lt and if point needs to be marked on canvas
+    if (threshold.op === 'gt' && value > threshold.value) {
+      return true;
+    } else if (threshold.op === 'lt' && value < threshold.value) {
+      return true;
+    } else {
+      return false;
     }
   }
 

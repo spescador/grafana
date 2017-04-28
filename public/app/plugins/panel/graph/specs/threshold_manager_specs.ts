@@ -68,6 +68,27 @@ describe('ThresholdManager', function() {
           expect(cavasCxt.isPointInPath(x,y)).to.be(true);
         }
       });
+
+       it('ensure correct datapoints are found to be outside the threshold', function() {
+        var axes = plot.getAxes();
+        var offset = plot.getPlotOffset();
+        // get the first (and only) series
+        var series = ctx.data;
+        var dp = series[0].datapoints;
+
+        for (var i = 0; i < dp.length; i++) {
+          var datapoint = dp[i];
+          var value = datapoint[1];
+
+          var isValueOutsideThreshold = manager.compareValueToThresholds(ctx.panel.thresholds[0], value);
+          // ensure first 2 values are not drawn but the reset are
+          if (i > 1) {
+            expect(isValueOutsideThreshold).to.be(true);
+          } else {
+            expect(isValueOutsideThreshold).to.be(false);
+          }
+        }
+      });
     });
 
     plotOptionsScenario("for simple gt threshold", ctx => {
