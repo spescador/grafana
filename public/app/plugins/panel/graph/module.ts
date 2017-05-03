@@ -113,10 +113,11 @@ class GraphCtrl extends MetricsPanelCtrl {
     // other style overrides
     seriesOverrides: [],
     thresholds: [],
+    metricLinks: [],
   };
 
   /** @ngInject */
-  constructor($scope, $injector, private annotationsSrv) {
+  constructor($scope, $injector, private annotationsSrv, private dashboardSrv) {
     super($scope, $injector);
 
     _.defaults(this.panel, this.panelDefaults);
@@ -132,6 +133,10 @@ class GraphCtrl extends MetricsPanelCtrl {
     this.events.on('data-snapshot-load', this.onDataSnapshotLoad.bind(this));
     this.events.on('init-edit-mode', this.onInitEditMode.bind(this));
     this.events.on('init-panel-actions', this.onInitPanelActions.bind(this));
+
+    $scope.searchDashboards = function(queryStr, callback) {
+      dashboardSrv.searchDashboards(queryStr, callback);
+    };
   }
 
   onInitEditMode() {
@@ -310,6 +315,34 @@ class GraphCtrl extends MetricsPanelCtrl {
     var legend = this.panel.legend;
     legend.values = legend.min || legend.max || legend.avg || legend.current || legend.total;
     this.render();
+  }
+
+  addMetricLink() {
+    var metricLinkDefaults = {
+      metricName: '',
+      link: {
+          type: 'dashboard',
+        },
+    };
+
+    this.panel.metricLinks.push(angular.copy(metricLinkDefaults));
+  }
+
+  deleteMetricLink(metricLink) {
+    this.panel.metricLinks = _.without(this.panel.metricLinks, metricLink);
+  }
+
+  getUnlinkedMetricsNames = () => {
+    var names = _.map(this.seriesList, function(series: any) {
+      return series.label;
+    });
+
+    for (let i = 0; i < this.panel.metricLinks.length; i++) {
+      let metricLink = this.panel.metricLinks[i];
+      names = _.without(names, metricLink.metricName);
+    }
+
+    return names;
   }
 
   exportCsv() {

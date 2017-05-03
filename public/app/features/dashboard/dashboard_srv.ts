@@ -112,6 +112,15 @@ export class DashboardSrv {
     });
   }
 
+   searchDashboards(queryStr, callback) {
+      this.backendSrv.search({query: queryStr}).then(function(hits) {
+        var dashboards = _.map(hits, function(dash) {
+          return dash.title;
+        });
+        callback(dashboards);
+      });
+    }
+
 }
 
 coreModule.service('dashboardSrv', DashboardSrv);

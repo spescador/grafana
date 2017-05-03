@@ -19,7 +19,7 @@ function (angular, _) {
         link: function() {
         }
       };
-    }).controller('PanelLinksEditorCtrl', function($scope, backendSrv) {
+    }).controller('PanelLinksEditorCtrl', function($scope, backendSrv, dashboardSrv) {
 
       $scope.panel.links = $scope.panel.links || [];
 
@@ -30,13 +30,7 @@ function (angular, _) {
       };
 
       $scope.searchDashboards = function(queryStr, callback) {
-        backendSrv.search({query: queryStr}).then(function(hits) {
-          var dashboards = _.map(hits, function(dash) {
-            return dash.title;
-          });
-
-          callback(dashboards);
-        });
+        dashboardSrv.searchDashboards(queryStr, callback);
       };
 
       $scope.dashboardChanged = function(link) {
