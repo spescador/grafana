@@ -43,6 +43,8 @@ class TablePanelCtrl extends MetricsPanelCtrl {
     fontSize: '100%',
     sort: {col: 0, desc: true},
     filterNull: false,
+    metricLinks: [],
+    headingDateFormat: 'YYYY-MM-DD HH:mm:ss',
   };
 
   /** @ngInject */

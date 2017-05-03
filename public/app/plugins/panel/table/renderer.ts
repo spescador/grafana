@@ -7,10 +7,12 @@ import kbn from 'app/core/utils/kbn';
 export class TableRenderer {
   formaters: any[];
   colorState: any;
+  $injector: any;
 
   constructor(private panel, private table, private isUtc, private sanitize) {
     this.formaters = [];
     this.colorState = {};
+    //this.$injector = $injector;
   }
 
   getColorForValue(value, style) {
@@ -136,7 +138,34 @@ export class TableRenderer {
       this.table.columns[columnIndex].hidden = false;
     }
 
+    if (this.hasLinkableContent(columnIndex)) {
+      value = this.getMetricLinkContent(value);
+    }
+
     return '<td' + style + '>' + value + widthHack + '</td>';
+  }
+
+   hasLinkableContent(columnIndex) {
+    return this.panel.transform === 'timeseries_as_columns' && columnIndex === 0;
+  }
+
+   getMetricLinkContent(value) {
+    var link = null;
+    for (let metricLink of this.panel.metricLinks) {
+      if (metricLink.metricName === value) {
+        link = metricLink.link;
+      }
+    }
+
+    var html = value;
+    if (link !== null) {
+      var linkSrv = this.$injector.get('linkSrv');
+      var info = linkSrv.getPanelLinkAnchorInfo(link, this.panel.scopedVars);
+      html = '<div class="markdown-html"><a class="panel-menu-link" href="';
+      html += info.href + '" target="' + info.target + '">' + value + '</a></div>';
+    }
+
+    return html;
   }
 
   render(page) {

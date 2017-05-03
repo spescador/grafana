@@ -138,3 +138,74 @@
     </button>
   </div>
 </div>
+
+<div class="editor-row" ng-show="editor.panel.transform === 'timeseries_as_columns'" style="margin-top: 40px;">
+  <div class="section gf-form-group">
+    <h5 class="section-heading">Time series column style</h5>
+    <div class="gf-form" style="margin-bottom: 20px;">
+      <label class="gf-form-label">Date format</label>
+      <metric-segment-model property="editor.panel.headingDateFormat" options="editor.dateFormats"
+                            on-change="editor.render()"
+                            custom="true"></metric-segment-model>
+    </div>
+    <h5 class="section-heading">Drill down</h5>
+    <div ng-repeat="metricLink in editor.panel.metricLinks">
+      <div class="section">
+        <div class="gf-form">
+          <div class="gf-form-label width-10">Name</div>
+          <input type="text" class="gf-form-input" ng-model="metricLink.metricName"
+                 bs-typeahead="editor.getUnlinkedMetricsNames"
+                 ng-blur="editor.render()" data-min-length=0 data-items=100 ng-model-onblur>
+        </div>
+
+        <div class="gf-form">
+          <span class="gf-form-label width-10">Type</span>
+          <div class="gf-form-select-wrapper gf-form--grow">
+            <select class="gf-form-input" ng-model="metricLink.link.type"
+                    ng-options="f for f in ['dashboard','absolute']" ng-change="editor.render()"></select>
+          </div>
+        </div>
+
+        <div class="gf-form">
+          <span class="gf-form-label width-7" ng-show="metricLink.link.type === 'dashboard'">Dashboard</span>
+          <input ng-show="metricLink.link.type === 'dashboard'" type="text" ng-change="editor.render()"
+                 ng-model="metricLink.link.dashboard" bs-typeahead="searchDashboards" class="gf-form-input">
+
+          <span class="gf-form-label width-7" ng-show="metricLink.link.type === 'absolute'">Url</span>
+          <input ng-show="metricLink.link.type === 'absolute'" type="text" ng-model="metricLink.link.url"
+                 class="gf-form-input max-width-14" ng-change="editor.render()">
+        </div>
+      </div>
+
+      <div class="section">
+        <div class="gf-form">
+          <span class="gf-form-label width-10">Url params</span>
+          <input type="text" ng-model="metricLink.link.params" class="gf-form-input width-10"
+                 ng-change="editor.render()">
+        </div>
+
+        <gf-form-switch class="gf-form" label-class="width-10" label="Include time range"
+                        checked="metricLink.link.keepTime" on-change="editor.render()"></gf-form-switch>
+        <gf-form-switch class="gf-form" label-class="width-10" label="Include variables"
+                        checked="metricLink.link.includeVars" on-change="editor.render()"></gf-form-switch>
+        <gf-form-switch class="gf-form" label-class="width-10" label="Open in new tab "
+                        checked="metricLink.link.targetBlank" on-change="editor.render()"></gf-form-switch>
+      </div>
+
+      <div class="section">
+        <div class="gf-form">
+          <button class="btn btn-inverse gf-form-btn" ng-click="editor.deleteMetricLink(metricLink); editor.render()"><i
+            class="fa fa-trash"></i>
+              Remove Link</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="gf-form-button">
+    <button class="btn btn-inverse" ng-show="editor.getUnlinkedMetricsNames().length > 0"
+            ng-click="editor.addMetricLink()"><i class="fa fa-plus"></i>&nbsp;Add
+      link</button>
+  </div>
+</div>
+
