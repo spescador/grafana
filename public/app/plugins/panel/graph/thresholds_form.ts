@@ -27,7 +27,7 @@ export class ThresholdFormCtrl {
   }
 
   addThreshold() {
-    this.panel.thresholds.push({value: undefined, colorMode: "critical", op: 'gt', fill: true, line: true});
+    this.panel.thresholds.push({value: undefined, colorMode: "critical", op: 'gt', fill: true, line: true, points: false});
     this.panelCtrl.render();
   }
 
@@ -90,6 +90,16 @@ var template = `
         <label class="gf-form-label">Line color</label>
         <span class="gf-form-label">
           <spectrum-picker ng-model="threshold.lineColor" ng-change="ctrl.render()" ></spectrum-picker>
+        </span>
+      </div>
+
+      <gf-form-switch class="gf-form" label="Points" checked="threshold.points"
+                      on-change="ctrl.render()" ng-disabled="ctrl.disabled" ng-hide="ctrl.panel.bars == true"></gf-form-switch>
+
+      <div class="gf-form" ng-if="threshold.points && threshold.colorMode === 'custom'">
+        <label class="gf-form-label">Points color</label>
+        <span class="gf-form-label">
+          <spectrum-picker ng-model="threshold.pointColor" ng-change="ctrl.render()" ></spectrum-picker>
         </span>
       </div>
 
