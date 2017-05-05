@@ -63,8 +63,8 @@ transformers['timeseries_to_columns'] = {
       var point = points[time];
       var values = [point.time];
 
-      for (var i = 0; i < data.length; i++) {
-        var value = point[i];
+      for (var index = 0; index < data.length; index++) {
+        var value = point[index];
         values.push(value);
       }
 
@@ -116,8 +116,8 @@ transformers['timeseries_as_columns'] = {
       var point = points[m];
       var values = [point.metric];
 
-      for (var c in columns) {
-        var value = point[c];
+      for (var col in columns) {
+        var value = point[col];
         values.push(value);
       }
 
@@ -296,4 +296,4 @@ function transformDataToTable(data, panel) {
   return model;
 }
 
-export {transformers, transformDataToTable}
+export {transformers, transformDataToTable};
