@@ -9,10 +9,10 @@ export class TableRenderer {
   colorState: any;
   $injector: any;
 
-  constructor(private panel, private table, private isUtc, private sanitize) {
+  constructor($injector, private panel, private table, private isUtc, private sanitize) {
     this.formaters = [];
     this.colorState = {};
-    //this.$injector = $injector;
+    this.$injector = $injector;
   }
 
   getColorForValue(value, style) {
@@ -145,11 +145,11 @@ export class TableRenderer {
     return '<td' + style + '>' + value + widthHack + '</td>';
   }
 
-   hasLinkableContent(columnIndex) {
+  hasLinkableContent(columnIndex) {
     return this.panel.transform === 'timeseries_as_columns' && columnIndex === 0;
   }
 
-   getMetricLinkContent(value) {
+  getMetricLinkContent(value) {
     var link = null;
     for (let metricLink of this.panel.metricLinks) {
       if (metricLink.metricName === value) {

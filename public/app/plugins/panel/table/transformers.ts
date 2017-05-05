@@ -9,6 +9,70 @@ import angular from "angular";
 
 var transformers = {};
 
+transformers['timeseries_to_rows'] = {
+  description: 'Time series to rows',
+  getColumns: function() {
+    return [];
+  },
+  transform: function(data, panel, model) {
+    model.columns = [
+      {text: 'Time', type: 'date'},
+      {text: 'Metric'},
+      {text: 'Value'},
+    ];
+
+    for (var i = 0; i < data.length; i++) {
+      var series = data[i];
+      for (var y = 0; y < series.datapoints.length; y++) {
+        var dp = series.datapoints[y];
+        model.rows.push([dp[1], series.target, dp[0]]);
+      }
+    }
+  },
+};
+
+transformers['timeseries_to_columns'] = {
+  description: 'Time series to columns',
+  getColumns: function() {
+    return [];
+  },
+  transform: function(data, panel, model) {
+    model.columns.push({text: 'Time', type: 'date'});
+
+    // group by time
+    var points = {};
+
+    for (var i = 0; i < data.length; i++) {
+      var series = data[i];
+      model.columns.push({text: series.target});
+
+      for (var y = 0; y < series.datapoints.length; y++) {
+        var dp = series.datapoints[y];
+        var timeKey = dp[1].toString();
+
+        if (!points[timeKey]) {
+          points[timeKey] = {time: dp[1]};
+          points[timeKey][i] = dp[0];
+        } else {
+          points[timeKey][i] = dp[0];
+        }
+      }
+    }
+
+    for (var time in points) {
+      var point = points[time];
+      var values = [point.time];
+
+      for (var i = 0; i < data.length; i++) {
+        var value = point[i];
+        values.push(value);
+      }
+
+      model.rows.push(values);
+    }
+  }
+};
+
 transformers['timeseries_as_columns'] = {
   description: 'Time series as columns',
   getColumns: function() {
@@ -52,8 +116,8 @@ transformers['timeseries_as_columns'] = {
       var point = points[m];
       var values = [point.metric];
 
-      for (var col in columns) {
-        var value = point[col];
+      for (var c in columns) {
+        var value = point[c];
         values.push(value);
       }
 
@@ -62,69 +126,6 @@ transformers['timeseries_as_columns'] = {
   }
 };
 
-transformers['timeseries_to_rows'] = {
-  description: 'Time series to rows',
-  getColumns: function() {
-    return [];
-  },
-  transform: function(data, panel, model) {
-    model.columns = [
-      {text: 'Time', type: 'date'},
-      {text: 'Metric'},
-      {text: 'Value'},
-    ];
-
-    for (var i = 0; i < data.length; i++) {
-      var series = data[i];
-      for (var y = 0; y < series.datapoints.length; y++) {
-        var dp = series.datapoints[y];
-        model.rows.push([dp[1], series.target, dp[0]]);
-      }
-    }
-  },
-};
-
-transformers['timeseries_to_columns'] = {
-  description: 'Time series to columns',
-  getColumns: function() {
-    return [];
-  },
-  transform: function(data, panel, model) {
-    model.columns.push({text: 'Time', type: 'date'});
-
-    // group by time
-    var points = {};
-
-    for (let i = 0; i < data.length; i++) {
-      var series = data[i];
-      model.columns.push({text: series.target});
-
-      for (var y = 0; y < series.datapoints.length; y++) {
-        var dp = series.datapoints[y];
-        var timeKey = dp[1].toString();
-
-        if (!points[timeKey]) {
-          points[timeKey] = {time: dp[1]};
-          points[timeKey][i] = dp[0];
-        } else {
-          points[timeKey][i] = dp[0];
-        }
-      }
-    }
-
-    for (var time in points) {
-      var point = points[time];
-      var values = [point.time];
-
-      for (let i = 0; i < data.length; i++) {
-        var value = point[i];
-        values.push(value);
-      }
-
-      model.rows.push(values);
-    }
-  }
-};
 
 transformers['timeseries_aggregations'] = {
   description: 'Time series aggregations',
@@ -295,4 +296,4 @@ function transformDataToTable(data, panel) {
   return model;
 }
 
-export {transformers, transformDataToTable};
+export {transformers, transformDataToTable}
