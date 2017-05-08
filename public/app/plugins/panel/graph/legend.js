@@ -115,7 +115,7 @@ function (angular, _, $) {
             var linkSrv = $injector.get('linkSrv');
             var info = linkSrv.getPanelLinkAnchorInfo(link, panel.scopedVars);
             html += '<div class="markdown-html">';
-            html += '<a class="panel-menu-link" href="' + info.href;
+            html += '<a class="graph-legend-alias" href="' + info.href;
             html += '" target="' + info.target + '">' + link.title + '</a>';
             html += '</div>';
           }
