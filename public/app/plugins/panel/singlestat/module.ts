@@ -391,7 +391,7 @@ class SingleStatCtrl extends MetricsPanelCtrl {
 
       if (panel.prefix) { body += getSpan('singlestat-panel-prefix', panel.prefixFontSize, panel.prefix); }
 
-      var value = applyColoringThresholds(data.valueRounded, data.valueFormatted);
+      var value = applyColoringThresholds(data.value, data.valueFormatted);
       body += getSpan('singlestat-panel-value', panel.valueFontSize, value);
 
       if (panel.postfix) { body += getSpan('singlestat-panel-postfix', panel.postfixFontSize, panel.postfix); }
@@ -478,7 +478,7 @@ class SingleStatCtrl extends MetricsPanelCtrl {
               width: thresholdMarkersWidth,
             },
             value: {
-              color: panel.colorValue ? getColorForValue(data, data.valueRounded) : null,
+              color: panel.colorValue ? getColorForValue(data, data.value) : null,
               formatter: function() { return getValueText(); },
               font: { size: fontSize, family: '"Helvetica Neue", Helvetica, Arial, sans-serif' }
             },
@@ -569,8 +569,8 @@ class SingleStatCtrl extends MetricsPanelCtrl {
 
       var body = panel.gauge.show ? '' : getBigValueHtml();
 
-      if (panel.colorBackground && !isNaN(data.valueRounded)) {
-        var color = getColorForValue(data, data.valueRounded);
+      if (panel.colorBackground && !isNaN(data.value)) {
+        var color = getColorForValue(data, data.value);
         if (color) {
           $panelContainer.css('background-color', color);
           if (scope.fullscreen) {
