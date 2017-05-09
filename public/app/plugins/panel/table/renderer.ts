@@ -9,7 +9,7 @@ export class TableRenderer {
   colorState: any;
   $injector: any;
 
-  constructor(private panel, private table, private isUtc, private sanitize) {
+  constructor($injector, private panel, private table, private isUtc, private sanitize) {
     this.initColumns();
     this.$injector = $injector;
   }
