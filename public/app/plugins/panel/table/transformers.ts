@@ -42,7 +42,7 @@ transformers['timeseries_to_columns'] = {
     // group by time
     var points = {};
 
-    for (var i = 0; i < data.length; i++) {
+    for (let i = 0; i < data.length; i++) {
       var series = data[i];
       model.columns.push({text: series.target});
 
@@ -63,7 +63,7 @@ transformers['timeseries_to_columns'] = {
       var point = points[time];
       var values = [point.time];
 
-      for (var i = 0; i < data.length; i++) {
+      for (let i = 0; i < data.length; i++) {
         var value = point[i];
         values.push(value);
       }
@@ -274,8 +274,7 @@ transformers['json'] = {
 };
 
 function transformDataToTable(data, panel) {
-  var model = new TableModel(),
-    copyData = angular.copy(data);
+  var model = new TableModel();
 
   if (!data || data.length === 0) {
     return model;
@@ -283,17 +282,11 @@ function transformDataToTable(data, panel) {
 
   var transformer = transformers[panel.transform];
   if (!transformer) {
-    throw {message: 'Transformer ' + panel.transformer + ' not found'};
+    throw {message: 'Transformer ' + panel.transform + ' not found'};
   }
 
-  if (panel.filterNull) {
-    for (var i = 0; i < copyData.length; i++) {
-      copyData[i].datapoints = copyData[i].datapoints.filter((dp) => dp[0] != null);
-    }
-  }
-
-  transformer.transform(copyData, panel, model);
+  transformer.transform(data, panel, model);
   return model;
 }
 
-export {transformers, transformDataToTable}
+export {transformers, transformDataToTable};
