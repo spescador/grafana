@@ -16,6 +16,10 @@
   position: relative;
 }
 
+.table-panel-container-not-fixed {
+  position: relative;
+}
+
 .table-panel-footer {
   text-align: center;
   font-size: 90%;
@@ -75,10 +79,6 @@
   }
 }
 
-.table-panel-container-not-fixed {
-  position: relative;
-}
-
 .table-panel-table.not-fixed {
   th {
     position: -webkit-sticky;
@@ -95,10 +95,6 @@
       }
     }
   }
-}
-
-.table-panel-table-header-inner.not-fixed {
-  position:relative;
 }
 
 .table-panel-header-bg {
@@ -118,6 +114,10 @@
   color: $blue;
   position: absolute;
   top: 0;
+}
+
+.table-panel-table-header-inner.not-fixed {
+  position:relative;
 }
 
 .table-panel-width-hack {

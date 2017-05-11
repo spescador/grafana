@@ -90,6 +90,11 @@ export class TablePanelEditorCtrl {
 
   transformChanged() {
     this.panel.columns = [];
+
+    if (this.panel.transform === 'timeseries_aggregations') {
+      this.panel.columns.push({text: 'Avg', value: 'avg'});
+    }
+
     this.render();
   }
 
@@ -105,7 +110,7 @@ export class TablePanelEditorCtrl {
   setUnitFormat(column, subItem) {
     column.unit = subItem.value;
     this.panelCtrl.render();
-  }
+  };
 
   addColumnStyle() {
     var columnStyleDefaults = {

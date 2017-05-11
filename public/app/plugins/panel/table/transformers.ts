@@ -112,16 +112,40 @@ transformers['timeseries_as_columns'] = {
       model.columns.push({text: date.format(panel.headingDateFormat)});
     }
 
+    var style = null;
+    for (var s in panel.styles) {
+      if (panel.styles[s].thresholds) {
+        style = panel.styles[s];
+      }
+    }
+
     for (var m in points) {
       var point = points[m];
       var values = [point.metric];
+      var thresholdList = [];
+      thresholdList.push(0);
+      thresholdList.push(0);
+      thresholdList.push(0);
 
-      for (var col in columns) {
-        var value = point[col];
+      for (var c in columns) {
+        var value = point[c];
         values.push(value);
+
+        if (style && style.thresholds) {
+          for (var t = style.thresholds.length; t > 0; t--) {
+            if (value >= style.thresholds[t - 1]) {
+              thresholdList[t]++;
+              t = -2;
+            }
+          }
+          if (t === 0) {
+            thresholdList[0]++;
+          }
+        }
       }
 
       model.rows.push(values);
+      model.thresholdCountPerRow[point.metric] = thresholdList;
     }
   }
 };
@@ -142,10 +166,6 @@ transformers['timeseries_aggregations'] = {
   transform: function(data, panel, model) {
     var i, y;
     model.columns.push({text: 'Metric'});
-
-    if (panel.columns.length === 0) {
-      panel.columns.push({text: 'Avg', value: 'avg'});
-    }
 
     for (i = 0; i < panel.columns.length; i++) {
       model.columns.push({text: panel.columns[i].text});
@@ -274,8 +294,7 @@ transformers['json'] = {
 };
 
 function transformDataToTable(data, panel) {
-  var model = new TableModel(),
-    copyData = angular.copy(data);
+  var model = new TableModel();
 
   if (!data || data.length === 0) {
     return model;
@@ -283,16 +302,10 @@ function transformDataToTable(data, panel) {
 
   var transformer = transformers[panel.transform];
   if (!transformer) {
-    throw {message: 'Transformer ' + panel.transformer + ' not found'};
+    throw {message: 'Transformer ' + panel.transform + ' not found'};
   }
 
-  if (panel.filterNull) {
-    for (var i = 0; i < copyData.length; i++) {
-      copyData[i].datapoints = copyData[i].datapoints.filter((dp) => dp[0] != null);
-    }
-  }
-
-  transformer.transform(copyData, panel, model);
+  transformer.transform(data, panel, model);
   return model;
 }
 
