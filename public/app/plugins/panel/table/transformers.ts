@@ -127,8 +127,8 @@ transformers['timeseries_as_columns'] = {
       thresholdList.push(0);
       thresholdList.push(0);
 
-      for (var c in columns) {
-        var value = point[c];
+      for (var col in columns) {
+        var value = point[col];
         values.push(value);
 
         if (style && style.thresholds) {
