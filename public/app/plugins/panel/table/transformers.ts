@@ -112,16 +112,40 @@ transformers['timeseries_as_columns'] = {
       model.columns.push({text: date.format(panel.headingDateFormat)});
     }
 
+    var style = null;
+    for (var s in panel.styles) {
+      if (panel.styles[s].thresholds) {
+        style = panel.styles[s];
+      }
+    }
+
     for (var m in points) {
       var point = points[m];
       var values = [point.metric];
+      var thresholdList = [];
+      thresholdList.push(0);
+      thresholdList.push(0);
+      thresholdList.push(0);
 
       for (var c in columns) {
         var value = point[c];
         values.push(value);
+
+        if (style && style.thresholds) {
+          for (var t = style.thresholds.length; t > 0; t--) {
+            if (value >= style.thresholds[t - 1]) {
+              thresholdList[t]++;
+              t = -2;
+            }
+          }
+          if (t === 0) {
+            thresholdList[0]++;
+          }
+        }
       }
 
       model.rows.push(values);
+      model.thresholdCountPerRow[point.metric] = thresholdList;
     }
   }
 };

@@ -125,7 +125,12 @@ class TablePanelCtrl extends MetricsPanelCtrl {
 
   render() {
     this.table = transformDataToTable(this.dataRaw, this.panel);
-    this.table.sort(this.panel.sort);
+
+    if (this.panel.transform === 'timeseries_as_columns') {
+      this.table.sortByThresholds(this.panel.sort);
+    } else {
+      this.table.sort(this.panel.sort);
+    }
 
     this.renderer = new TableRenderer(this.$injector, this.panel, this.table, this.dashboard.isTimezoneUtc(), this
     .$sanitize);
